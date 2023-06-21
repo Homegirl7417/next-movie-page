@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function Home() {
+export default function Home({ results }) {
   const [movies, setMovies] = useState([]);
   useEffect(() => {
     (async () => {
@@ -11,7 +11,7 @@ export default function Home() {
   }, []);
   return (
     <div className="container">
-      {movies.map((movie) => (
+      {results.map((movie) => (
         <div className="movie" key={movie.id}>
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt={`Poster Image: ${movie.original_title}`} />
           <h4>{movie.original_title}</h4>
@@ -43,4 +43,13 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const { results } = await (await fetch(`http://localhost:4000/api/movies`)).json();
+  return {
+    props: {
+      results,
+    },
+  };
 }
